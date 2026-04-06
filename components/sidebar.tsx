@@ -166,7 +166,7 @@ const navigationConfig: Record<UserRole, NavItem[]> = {
 // ═════════════════════════════════════════════════════════════════════════════
 
 export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const pathname = usePathname();
 
   if (!user) return null;
@@ -265,11 +265,18 @@ export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-[#e0e0e0] bg-[#f4f4f4]">
-          <div className="text-xs text-[#6f6f6f] text-center">
-            Foodies Zimbabwe
-            <br />
-            Financial Control Platform v2.0
+        <div className="border-t border-[#e0e0e0] bg-[#f4f4f4]">
+          <button
+            onClick={logout}
+            className="w-full flex items-center gap-3 px-4 py-3 text-sm text-[#525252] hover:bg-[#e0e0e0] hover:text-[#161616] transition-colors"
+          >
+            <svg viewBox="0 0 32 32" fill="currentColor" className="w-5 h-5 shrink-0">
+              <path d="M12 4H4v24h8v-2H6V6h6zm8 18l-1.5-1.5L22 17H10v-2h12l-3.5-3.5L20 10l6 6z"/>
+            </svg>
+            <span>Sign Out</span>
+          </button>
+          <div className="px-4 pb-3 text-xs text-[#6f6f6f] text-center">
+            Foodies Zimbabwe · FCP v2.0
           </div>
         </div>
       </nav>

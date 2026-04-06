@@ -54,13 +54,14 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
     setModals([]);
   }, []);
 
-  const confirm = useCallback((options: { 
-    title: string; 
-    message: string; 
+  const confirm = useCallback((options: {
+    title: string;
+    message: string;
     onConfirm: () => void;
     confirmLabel?: string;
   }) => {
-    openModal({
+    let modalId: string;
+    modalId = openModal({
       type: 'confirm',
       title: options.title,
       message: options.message,
@@ -68,9 +69,9 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
       cancelLabel: 'Cancel',
       onConfirm: () => {
         options.onConfirm();
-        closeModal('temp');
+        closeModal(modalId);
       },
-      onCancel: () => closeModal('temp'),
+      onCancel: () => closeModal(modalId),
       size: 'md',
     });
   }, [openModal, closeModal]);

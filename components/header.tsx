@@ -18,7 +18,11 @@ export function Header({ onMenuClick, showMenuButton = false }: HeaderProps) {
     : user.role === 'accountant' 
     ? 'ACCOUNTANT' 
     : user.role === 'director' 
-    ? 'DIRECTOR' 
+    ? 'DIRECTOR'
+    : user.role === 'storesman'
+    ? 'STORESMAN'
+    : user.role === 'supplier'
+    ? 'SUPPLIER'
     : 'ADMIN';
 
   return (
@@ -76,9 +80,9 @@ export function Header({ onMenuClick, showMenuButton = false }: HeaderProps) {
           </svg>
         </button>
         
-        <button 
+        <button
           onClick={logout}
-          className="hidden sm:flex w-11 h-12 items-center justify-center text-[#c6c6c6] hover:text-white hover:bg-[#262626] transition-colors"
+          className="flex w-10 h-12 sm:w-11 items-center justify-center text-[#c6c6c6] hover:text-white hover:bg-[#262626] transition-colors"
           title="Sign Out"
         >
           <svg width="16" height="16" viewBox="0 0 32 32" fill="currentColor">
