@@ -536,4 +536,44 @@
   .border-l-3 {
     border-left-width: 3px;
   }
+  
+  /* Mobile-safe area utilities for notched devices */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0);
+  }
+  
+  /* Touch-friendly tap targets */
+  .tap-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ══ RESPONSIVE UTILITIES ═══════════════════════════════════════════════════ */
+
+/* Extra small breakpoint for tiny screens */
+@media (max-width: 400px) {
+  .xs\:hidden {
+    display: none !important;
+  }
+}
+
+@media (min-width: 401px) {
+  .xs\:inline-flex {
+    display: inline-flex !important;
+  }
 }

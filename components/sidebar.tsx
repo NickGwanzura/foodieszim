@@ -20,6 +20,11 @@ interface NavItem {
   badgeType?: 'alert' | 'warning' | 'success' | 'info';
 }
 
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
 // Carbon Design System icons
 const Icons = {
   dashboard: (
@@ -160,7 +165,7 @@ const navigationConfig: Record<UserRole, NavItem[]> = {
 // SIDEBAR COMPONENT
 // ═════════════════════════════════════════════════════════════════════════════
 
-export function Sidebar() {
+export function Sidebar({ isOpen = true, onClose }: SidebarProps) {
   const { user } = useAuth();
   const pathname = usePathname();
 
@@ -179,60 +184,95 @@ export function Sidebar() {
     }
   };
 
+  const handleLinkClick = () => {
+    if (onClose && window.innerWidth < 1024) {
+      onClose();
+    }
+  };
+
   return (
-    <nav className="w-64 bg-white border-r border-[#e0e0e0] overflow-y-auto shrink-0 flex flex-col">
-      {/* Role Header */}
-      <div className={cn("p-4 border-b border-[#e0e0e0]", roleStyle.bg)}>
-        <div className="text-xs uppercase tracking-wider font-semibold mb-1 opacity-70">
-          Logged in as
-        </div>
-        <div className="font-medium text-[#161616]">{user.name}</div>
-        <div className={cn("inline-flex items-center px-2 py-0.5 mt-2 text-xs font-medium", roleStyle.text)}>
-          {roleLabels[user.role]}
-        </div>
-        {user.branchName && (
-          <div className="text-xs text-[#6f6f6f] mt-1">{user.branchName}</div>
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Sidebar */}
+      <nav 
+        className={cn(
+          "fixed lg:static inset-y-0 left-0 z-50 w-64 bg-white border-r border-[#e0e0e0] overflow-y-auto shrink-0 flex flex-col transition-transform duration-300 ease-in-out",
+          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
-      </div>
+      >
+        {/* Mobile Close Button */}
+        <button
+          onClick={onClose}
+          className="lg:hidden absolute top-3 right-3 w-8 h-8 flex items-center justify-center text-[#525252] hover:text-[#161616] hover:bg-[#f4f4f4] rounded"
+          aria-label="Close menu"
+        >
+          <svg width="20" height="20" viewBox="0 0 32 32" fill="currentColor">
+            <path d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4l6.6 6.6L8 22.6 9.4 24l6.6-6.6 6.6 6.6 1.4-1.4-6.6-6.6L24 9.4z"/>
+          </svg>
+        </button>
 
-      {/* Navigation Items */}
-      <div className="flex-1 py-2">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname?.startsWith(item.href));
-
-          return (
-            <Link
-              key={item.id}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-3 px-4 py-3 text-sm transition-colors border-l-[3px]',
-                isActive
-                  ? cn('bg-[#F5C518]/10 text-[#161616] border-l-[#F5C518] font-medium')
-                  : 'text-[#525252] border-l-transparent hover:bg-[#f4f4f4] hover:text-[#161616]'
-              )}
-            >
-              <span className={cn(isActive ? 'text-[#F5C518]' : 'text-[#8d8d8d]')}>
-                {item.icon}
-              </span>
-              <span className="flex-1">{item.label}</span>
-              {item.badge !== undefined && item.badge > 0 && (
-                <span className={cn('text-xs font-bold px-2 py-0.5 rounded-full', getBadgeStyles(item.badgeType))}>
-                  {item.badge}
-                </span>
-              )}
-            </Link>
-          );
-        })}
-      </div>
-
-      {/* Footer */}
-      <div className="p-4 border-t border-[#e0e0e0] bg-[#f4f4f4]">
-        <div className="text-xs text-[#6f6f6f] text-center">
-          Foodies Zimbabwe
-          <br />
-          Financial Control Platform v2.0
+        {/* Role Header */}
+        <div className={cn("p-4 border-b border-[#e0e0e0] pr-12 lg:pr-4", roleStyle.bg)}>
+          <div className="text-xs uppercase tracking-wider font-semibold mb-1 opacity-70">
+            Logged in as
+          </div>
+          <div className="font-medium text-[#161616]">{user.name}</div>
+          <div className={cn("inline-flex items-center px-2 py-0.5 mt-2 text-xs font-medium", roleStyle.text)}>
+            {roleLabels[user.role]}
+          </div>
+          {user.branchName && (
+            <div className="text-xs text-[#6f6f6f] mt-1">{user.branchName}</div>
+          )}
         </div>
-      </div>
-    </nav>
+
+        {/* Navigation Items */}
+        <div className="flex-1 py-2">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname?.startsWith(item.href));
+
+            return (
+              <Link
+                key={item.id}
+                href={item.href}
+                onClick={handleLinkClick}
+                className={cn(
+                  'flex items-center gap-3 px-4 py-3 text-sm transition-colors border-l-[3px]',
+                  isActive
+                    ? cn('bg-[#F5C518]/10 text-[#161616] border-l-[#F5C518] font-medium')
+                    : 'text-[#525252] border-l-transparent hover:bg-[#f4f4f4] hover:text-[#161616]'
+                )}
+              >
+                <span className={cn(isActive ? 'text-[#F5C518]' : 'text-[#8d8d8d]', 'shrink-0')}>
+                  {item.icon}
+                </span>
+                <span className="flex-1 truncate">{item.label}</span>
+                {item.badge !== undefined && item.badge > 0 && (
+                  <span className={cn('text-xs font-bold px-2 py-0.5 rounded-full shrink-0', getBadgeStyles(item.badgeType))}>
+                    {item.badge}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Footer */}
+        <div className="p-4 border-t border-[#e0e0e0] bg-[#f4f4f4]">
+          <div className="text-xs text-[#6f6f6f] text-center">
+            Foodies Zimbabwe
+            <br />
+            Financial Control Platform v2.0
+          </div>
+        </div>
+      </nav>
+    </>
   );
 }
